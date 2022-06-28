@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: UNLICENSED;
+// SPDX-License-Identifier: UNLICENSED;
 pragma solidity 0.8.0;
 
 interface IERC20 {
@@ -15,92 +15,95 @@ interface IERC20 {
 
 contract ERC20 is IERC20{
 
-    // VARIABLES
-        // NOMBRE
-        string public constant name = "Blockdemy Community Token";
-        //SIMBOLO
-        string public constant symbol = "BAM";
-        // DECIMALES
-        uint8 public constant decimals = 18;
+    //Variables 
+
+    //NOMBRE
+    string public constant name = "Blockdemy Community Token";
+
+    //SIMBOLO
+    string public constant symbol = "BAM";
+
+    // DECIMALES
+    uint8 public constant decimals = 18;
+
+    //TOTAL SUPPLY
+    // 10 ether ===> 10 000000000000000000
+    uint256 totalSupply_ = 10 ether;
 
 
-        mapping (address => uint256) balances;
-        mapping(address => mapping (address => uint256)) allowed;
+    //BALANCES
+    mapping (address => uint256) balances;
 
-        // 10 ether ===> 10 000000000000000000
-        uint256 totalSupply_ = 10 ether;
-    // CONSTRUCTor
+    //ALLOWED
+    mapping(address => mapping (address=> uint256)) allowed;
 
-    constructor() {
+    constructor(){
         balances[msg.sender] = totalSupply_;
     }
 
-    // FUNCIONES
-
-    // totalSupply retornar total supply
-    function totalSupply() public override view returns (uint256){
+    //Funciones
+    
+    //TotalSupply retorna el total supply
+    function totalSupply() external override view returns (uint256){
         return totalSupply_;
     }
-    // balanceOf devolver el balance de una cuenta en especifico
-    function balanceOf(address _owner) public override view returns (uint256 balance){
+
+    //Devolver el balance de una cuenta en especifico.
+    function balanceOf(address _owner) external override view returns (uint256 balance){
         return balances[_owner];
     }
-    // transfer transferir de una cuenta a otra
+
+    //Transferir cierta cantidad a otra cuenta
+
     /*
-        VERIFICAR QUE EL MONTO SEÑALADO SEA IGUAL O MENOR QUE EL BALANCE DEL OWNER
-        ACTUALIZAR BALANCE DEL OWNER
-        ACTUALIZAR BALANCE DEL BUYER
-        EMITIR UN EVENTO DE TIPO TRANSFER
-        RETORNAR ALGO ***
-
-
+    Verificar que el monto que quiero transferir sea igual o menor que el balance del owner
+    Actualizar el balance del owner 
+    Actualizar el balance del buyer 
+    Emitir un evento de tipo transfer
+    Return si fue exitoso o no
     */
-    function transfer(address _to, uint256 _value) public override returns (bool success){
-        require(_value <= balances[msg.sender]);
+    function transfer(address _to, uint256 _value) external override returns (bool success){
+        require (balances[msg.sender] <= _value);
         balances[msg.sender] = balances[msg.sender] - _value;
         balances[_to] = balances[_to] + _value;
         emit Transfer(msg.sender, _to, _value);
         return true;
     }
-    // transferFrom transferir de una cuenta  a la cual se le permitio gastar lso tokens del owner
-            /*
-        
-            VERIFICAR QUE EL MONTO SEÑALADO SEA IGUAL O MENOR QUE EL BALANCE DEL OWNER
-            VERIFICAR EL MONTO SEÑALADO SEA IGUAL O MENOR QUE LOS PERMITIDOS A GASTAR POR EL SPENDER
-            ACTUALIZAR BALANCE DEL OWNER
-            ACTUALIZAR EL BALANCE DEL SPENDER
-            ACTUALIZAR BALANCE DEL BUYER
 
-            EMITIR UN EVENTO DE TIPO TRANSFER
-            RETORNAR TRUE
-        
-
+    //Que otra cuenta transfiera por ti. 
+    /*
+    Verificar que el remitente tenga menos o igual del valor que va a transferir. 
+    Verificar que el monto sea menor o igual al pertido a gastar.
+    Restar el valor a los balances del remitente. 
+    Restar el valor a los balances de allowed. 
+    Se le suma al destinatario el valor que le acaban de transferir
+    Emitir el evento de tipo transfer
+    Retorna true
     */
-
-    function transferFrom(address _owner, address _buyer, uint256 _value) public override returns (bool success){
-        require(_value <= balances[_owner]);
-        require(_value <= allowed[_owner][msg.sender]);
-        balances[_owner] = balances[_owner] - _value;
-        allowed[_owner][msg.sender] = allowed[_owner][msg.sender] - _value;
-        balances[_buyer] = balances[_buyer] + _value;
-        emit Transfer(_owner, _buyer, _value);
+    function transferFrom(address _from, address _to, uint256 _value) external override returns (bool success){
+        require(_value <= balances[_from]);
+        require(_value <= allowed[_from][msg.sender]);
+        balances[_from] = balances[_from] - _value;
+        allowed[_from][msg.sender] = allowed[_from][msg.sender] - _value;
+        balances[_to] = balances[_to] + _value;
+        emit Transfer(_from, _to, _value);
         return true;
     }
-    // approve es permitir gastar cierta cantidad de tokens a una address en especifica
+
+    //Aprove. Permite gastar cierta cantidad de tokens a una address. 
     /*
-        actualizar los balances del mapping allowed par apermitir gastar cierta cantidad de tokens
-        emitir tipo Approval
-        retornar true
+    Actualizar balances del mapping allowed para permitir gastar cierto valor a una cuenta, a mi nombre.
+    emitir evento Approval
     */
-    function approve(address _spender, uint256 _value) public override returns (bool success){
+    function approve(address _spender, uint256 _value) external override returns (bool success){
         allowed[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);
         return true;
     }
-    
-    // allowance retornar la cantidad de tokens permitidos para gastar de un owner
-    function allowance(address _owner, address _spender) public override view returns (uint256 remaining){
+
+    //Allowance. Retornar la cantidad de tokens permitidos para una cuenta. 
+    function allowance(address _owner, address _spender) external override view returns (uint256 remaining){
         return allowed[_owner][_spender];
     }
-}
 
+}
