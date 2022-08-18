@@ -2,50 +2,72 @@
 
 pragma solidity ^0.8.0;
 
-contract dataTypesValor{
 
+contract dataTypeValor{
 
-    //Booleanos
-    bool flagTrue = true;
-    bool flagFalse = false;
+    //Booleano
+    bool flagVerdadero = true;
+    bool flagFalso = false;
 
-    /*****************************************************************/
-    //Enteros 
+    //**************************************/
 
-    //int - Entero con signo y 256 bits
-    int numero1 = -8;
+    //Enteros con signo 
+    
+    //* 256 bits 
+    int number1 = -8;
 
-    //int8 - Entero con signo y 8 bits
-    int8 numero2 = -8;
+    //*8 bits
+    int8 number2 = -8;
 
-    //uint - Entero sin signo y 256 bits
-    uint numero10 = 8;
+    int16 number3 = -8;
 
-    /*****************************************************************/
-    //Adress - 20 bytes. Dirección de Ethereum. 
+    //*256 bits
+    int256 number10 = -8;
 
-    //*Address del contract account 
-    address public addressContract = address(this); 
+    //Enteros sin signo
 
-    //*Address de la externally owned account
-    address public addressOwned = msg.sender;
+    //* 256 bits 
+    uint number4 = 8;
 
-    //Miembros de Address
+    //*8 bits
+    uint8 number5 = 8;
 
-    //*Balance - Monto de una dirección. 
-    uint public addressContractBalance = addressContract.balance;
+    //*32 bits
+    uint32 number6 = 8;
 
-    /*****************************************************************/
-    //Arrays de bytes de tamaño fijo - bytes 1 a bytes32
+    //**************************************/
 
-    //* 1 byte - 8 bits
-    bytes1 data1 = "9";
-    bytes32 data2 = "Hello world";
+    //Address - 20 bytes - Direcciones Ethereum 
+    
+    //* Address del contract acount 
+    address public addressAcount = address(this);
 
-    //Miembros de bytes
+    //* Address de la externally owned account 
+    address public addressExternally = msg.sender;
 
-    //* Tamaño 
-    uint public lenghtData1 = data1.length;
-    uint public lengthData2 = data2.length;
+    //Propiedades de address
+
+    //*Balance 
+    uint public balanceAddressAcount = addressAcount.balance;
+ 
+    uint public balanceAddresExternally = addressExternally.balance;
+
+    //**************************************/
+
+    //Arrays de tamaño fijo bytes1 - bytes32
+
+    //1 byte - 8 bits 
+    bytes1 data = "9";
+
+    bytes2 data2 = "90";
+
+    bytes32 data3 = "Hello world";
+
+    //Propiedades de bytes 
+
+    //*Tamaño
+    uint public lenghtData1 = data.length;
+
+    uint public lenghtData2 = data2.length;
 
 }
