@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 
-contract dataTypeValor{
+contract DataTypeValor{
 
     //Booleano
     bool flagVerdadero = true;
