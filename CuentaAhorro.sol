@@ -15,7 +15,7 @@ pragma solidity ^0.8.0;
 // Address de cuenta - Nombre, edad, color favorito.
 
 
-contract CuentaAhorro{
+contract MiPrimerSmartContract{
 
 //Datos
 
@@ -59,37 +59,38 @@ contract CuentaAhorro{
         personas[owner] = p1; 
     }
 
+    
+
     function getSaldo() public view returns(uint){
         return p1.saldo;
     }
-
-    receive() external payable{
-        p1.saldo = address(this).balance;
-    }
-
+    
     function getBalance() public view returns(uint){
         return address(this).balance;
     }
 
+    address payable _to = payable(this);
 
+    function sendEther() external payable{
+        _to.transfer(msg.value);
+        p1.saldo = _to.balance;
+    }
+
+
+    receive() external payable{
+    }
     
 }
 
 contract segundoContract{
 
-    CuentaAhorro m = new CuentaAhorro(12, "Lizeth", "Morado");
+    MiPrimerSmartContract m = new MiPrimerSmartContract(12, "Lizeth", "Morado");
 
-
-    
     function operacion() public returns (uint){
         m.store(100);
         m.retrieve(5);
         uint saldo = m.getSaldo();
         return saldo;
     }
-
-    function sendEtherTransfer(address payable _to) public payable{
-        _to.transfer(msg.value);
-    }
-
+    
 }
