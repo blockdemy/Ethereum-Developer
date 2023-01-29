@@ -42,6 +42,9 @@ contract DataTypeValor{
     //**************************************/
 
     //Address - 20 bytes - Direcciones Ethereum 
+
+    //* Address payable - Puede recibir Ether 
+    address payable myaddress; 
     
     //* Address del contract acount 
     address public addressAcount = address(this);
