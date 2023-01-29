@@ -5,8 +5,12 @@ pragma solidity ^0.8.0;
 
 contract dataTypeReferencia{
 
-    //Arrays
+    //Array fijo 
     uint[] public numeros;
+
+    //Array dinámico 
+    int[3] public cantidades;
+
     //miembros de Arrays
 
     //Length - Tamaño 
