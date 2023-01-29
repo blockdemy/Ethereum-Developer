@@ -5,8 +5,25 @@ pragma solidity ^0.8.0;
 
 contract dataTypeReferencia{
 
-    //Struct 
+    //Arrays
+    uint[] public numeros;
+    //miembros de Arrays
 
+    //Length - Tamaño 
+    uint numerosL = numeros.length;
+
+    //Push - Añadir. Pop - Sacar
+    function numerosMiembros() public{
+
+        numeros.push(5);
+        numeros.push(6);
+        numeros.pop();
+
+       numerosL = numeros.length;
+    }
+    
+
+    //Struct 
     struct Persona{
         bool vacunado; 
         uint8 edad;
