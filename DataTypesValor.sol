@@ -35,6 +35,10 @@ contract DataTypeValor{
     //*32 bits
     uint32 number6 = 8;
 
+    //Conversiones entre Tipos de Datos 
+    int numNegative = -6;
+    uint public numPositive = uint(numNegative); 
+
     //**************************************/
 
     //Address - 20 bytes - Direcciones Ethereum 
@@ -69,5 +73,8 @@ contract DataTypeValor{
     uint public lenghtData1 = data.length;
 
     uint public lenghtData2 = data2.length;
+
+    //String 
+    string public hello = "Hello world";
 
 }
