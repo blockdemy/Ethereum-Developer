@@ -5,6 +5,8 @@ pragma solidity ^0.8.0;
 
 contract VisibilidadFunciones{
     
+    //*********Programa de Recompensas
+
     int internal puntosTotales;
     int  puntosIn;
 
