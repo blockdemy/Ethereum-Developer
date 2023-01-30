@@ -1,0 +1,37 @@
+// SPDX-License-Identifier: GPL-3.0
+
+pragma solidity ^0.8.0;
+
+
+contract Funciones{
+
+    //Variables de estado
+    int operador1;
+    int operador2; 
+    int resultado;
+
+    //Funciones
+
+    //Recibe n parámetros
+    function asignarDatos(int _parametro1, int _parametro2) public{
+        operador1 = _parametro1;
+        operador2 = _parametro2;
+    }
+
+    //No recibe parámetros
+    function sumar()public {
+        resultado = operador1 + operador2; 
+    }
+
+    bytes res = "El resultado es: ";
+    //Regresa un valor
+    function obtenerResultado() public returns (int){
+        return resultado;
+    }
+
+    //Regresa múltiples valores
+    function obtenerValores() public returns (int, int, int){
+        return (operador1, operador2, resultado);
+    }
+
+}
