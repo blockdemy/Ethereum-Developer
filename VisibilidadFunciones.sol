@@ -26,8 +26,8 @@ contract VisibilidadFunciones{
 
 contract EjemploVisFun is VisibilidadFunciones{
 
-    address public sender;
-    function agregarPuntosVIP(int _p1) public{
+    address public owner;
+    function agregarPuntosVIP(int _p1) public onlyAdmin{
        require(_p1 > 0, "No puedes agregar 0 Puntos");
        agregarPuntos(_p1);
        puntosTotales = 10*puntosTotales; 
@@ -39,20 +39,26 @@ contract EjemploVisFun is VisibilidadFunciones{
     }
 
    //External - Se llaman expliciatemente y desde otros contratos 
-    function obtenerSender()external view returns(address){
-        return sender;
+    function obtenerOwner()external view returns(address){
+        return owner;
     }
 
     function getDatos() public view returns (address, int, address){
-        return (this.obtenerSender(), puntosTotales, address(this));
+        return (this.obtenerOwner(), puntosTotales, address(this));
     }
 
     function calcularPorcentaje10(int _numero)public pure returns(int) {
         return _numero*10;
     }
 
+    //Modifiers - Se debe cumplir esta condición antes de ejecutar la función
+    modifier onlyAdmin(){
+        require(msg.sender == 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db , "No eres el Admin");
+        _;
+    }
+
     constructor(){
-        sender = msg.sender;
+        owner = msg.sender;
         agregarPuntosVIP(5);
     }
 
