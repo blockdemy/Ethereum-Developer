@@ -32,6 +32,13 @@ contract Funciones{
     //Regresa múltiples valores
     function obtenerValores() public returns (int, int, int){
         return (operador1, operador2, resultado);
+    }   
+
+    address public sender; 
+    //Constructor
+    constructor(int _p1, int _p2){
+        sender = msg.sender; 
+        asignarDatos(_p1, _p2);
     }
 
 }
