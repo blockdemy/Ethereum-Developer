@@ -21,16 +21,25 @@ contract VisibilidadFunciones{
         puntosTotales = puntosTotales + puntosIn;
     }
 
+    
        
 }
 
 contract EjemploVisFun is VisibilidadFunciones{
 
     address public owner;
+
+    constructor(){
+        owner = msg.sender;
+        agregarPuntosVIP(5);
+    }
+
     function agregarPuntosVIP(int _p1) public onlyAdmin{
        require(_p1 > 0, "No puedes agregar 0 Puntos");
        agregarPuntos(_p1);
        puntosTotales = 10*puntosTotales; 
+
+       emit AgregarPuntosVIP(_p1, owner);
     }
 
     //public - Puede llamarse desde otro contrato y genera un getter
@@ -57,9 +66,7 @@ contract EjemploVisFun is VisibilidadFunciones{
         _;
     }
 
-    constructor(){
-        owner = msg.sender;
-        agregarPuntosVIP(5);
-    }
+    //Eventos - Notifica el status de la blockchain al exterior
+    event AgregarPuntosVIP(int _p1, address owner);
 
 }
