@@ -6,10 +6,10 @@ pragma solidity ^0.8.0;
 contract VisibilidadFunciones{
     
     int internal puntosTotales;
-    int private puntosIn;
+    int  puntosIn;
 
     //Private - Solo pueden ser llamadas desde el mismo contrato 
-    function asignarPuntos(int _p1) private returns(int){
+    function asignarPuntos(int _p1) private{
         puntosIn = _p1;
     }
     
@@ -25,27 +25,33 @@ contract VisibilidadFunciones{
 contract EjemploVisFun is VisibilidadFunciones{
 
     address public sender;
-    function agregarPuntosVIP(int _p1) private{
+    function agregarPuntosVIP(int _p1) public{
+       require(_p1 > 0, "No puedes agregar 0 Puntos");
        agregarPuntos(_p1);
        puntosTotales = 10*puntosTotales; 
     }
 
     //public - Puede llamarse desde otro contrato y genera un getter
-    function verPuntos() public returns(int){
+    function verPuntos() public view returns(int){
         return puntosTotales;
     }
 
    //External - Se llaman expliciatemente y desde otros contratos 
-    function obtenerSender()external returns(address){
+    function obtenerSender()external view returns(address){
         return sender;
     }
 
-    function getDatos() public returns (address, int, address){
+    function getDatos() public view returns (address, int, address){
         return (this.obtenerSender(), puntosTotales, address(this));
+    }
+
+    function calcularPorcentaje10(int _numero)public pure returns(int) {
+        return _numero*10;
     }
 
     constructor(){
         sender = msg.sender;
         agregarPuntosVIP(5);
     }
+
 }
