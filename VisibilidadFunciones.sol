@@ -57,6 +57,9 @@ contract EjemploVisFun is VisibilidadFunciones{
     }
 
     function calcularPorcentaje10(int _numero)public pure returns(int) {
+        if (_numero < 0){
+           revert NumeroNegativo(_numero); 
+        }
         return _numero*10;
     }
 
@@ -69,4 +72,6 @@ contract EjemploVisFun is VisibilidadFunciones{
     //Eventos - Notifica el status de la blockchain al exterior
     event AgregarPuntosVIP(int _p1, address owner);
 
+    //Error 
+    error NumeroNegativo(int _numero);
 }
