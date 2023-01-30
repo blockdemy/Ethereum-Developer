@@ -2,95 +2,63 @@
 
 pragma solidity ^0.8.0;
 
-//Cuenta de ahorro
 
-//En un inicio el saldo es cero. 
+contract CuentaAhorro{
 
-//Ingresar saldo 
-//Retirar saldo 
-
-//Valide si es posible ingresar o retirar valor
-
-//Guardar mis datos
-// Address de cuenta - Nombre, edad, color favorito.
-
-
-contract MiPrimerSmartContract{
-
-//Datos
+    //***CuentaAhorro 
 
     struct Persona{
-        uint8 edad;
         string nombre;
-        string color;
+        uint8 edad;
         uint saldo;
     }
 
-    Persona public p1;
+    mapping (address => Persona) public personas;
+
+    function createPersona(string memory _nombre, uint8 _edad) public{
+        //1. Crear a la persona 
+        Persona memory p1 = Persona(_nombre, _edad, 0);
+
+        //2. Agregarla al mapping de personas;
+        personas[msg.sender] = p1;
+    }
 
 
-    mapping (address => Persona) personas;
+    //Función que ingresa saldo
+    function store (uint _deposito) public{
+        //1. Consultar a la persona a la que le agregaremos el saldo
+        Persona memory p1 = personas[msg.sender];
+
+        //2. Agregar saldo 
+        p1.saldo = p1.saldo + _deposito;
+
+        //3. Volver a agregar al mapping de personas
+        personas[msg.sender] = p1; 
+    }
+
     
+    //Función que retira saldo
+    function retrieve (uint _retiro) public{
+        //1. Consultar a la persona a la que le retiramos el saldo
+        Persona memory p1 = personas[msg.sender];
 
-    address owner;
+        //2. Verificar que el saldo sea mayor a lo que se quiere retirar
+        require(p1.saldo > _retiro, "Saldo insuficiente");
 
-    constructor(uint8 _edad, string memory _nombre, string memory _color){
+        //2. retirar saldo 
+        p1.saldo = p1.saldo - _retiro;
 
-        p1.edad = _edad;
-        p1.nombre = _nombre;
-        p1.color = _color;
-        p1.saldo = 0;
-
-        owner = msg.sender;
-        personas[owner] = p1; 
+        //3. Volver a agregar al mapping de personas
+        personas[msg.sender] = p1; 
         
     }
 
-    //Función que ingresa saldo
-    function store (uint deposito) public{
-        p1.saldo = p1.saldo + deposito;
-        personas[owner] = p1; 
-    }
-
-    //Retiro - Funcion que retira saldo
-    function retrieve (uint retiro) public{
-        require(retiro < p1.saldo, "Saldo insuficiente");
-        p1.saldo = p1.saldo - retiro;
-        personas[owner] = p1; 
-    }
-
-    
-
+    //Función que consulta saldo
     function getSaldo() public view returns(uint){
+        //1. Consultar a la persona a la que le consultaremos el saldo
+        Persona memory p1 = personas[msg.sender];
+        //2. Regresar el saldo
         return p1.saldo;
-    }
-    
-    function getBalance() public view returns(uint){
-        return address(this).balance;
-    }
-
-    address payable _to = payable(this);
-
-    function sendEther() external payable{
-        _to.transfer(msg.value);
-        p1.saldo = _to.balance;
-    }
-
-
-    receive() external payable{
-    }
-    
-}
-
-contract segundoContract{
-
-    MiPrimerSmartContract m = new MiPrimerSmartContract(12, "Lizeth", "Morado");
-
-    function operacion() public returns (uint){
-        m.store(100);
-        m.retrieve(5);
-        uint saldo = m.getSaldo();
-        return saldo;
     }
     
 }
