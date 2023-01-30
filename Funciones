@@ -4,6 +4,8 @@ pragma solidity ^0.8.0;
 
 
 contract Funciones{
+    
+    //***Calculadora 
 
     //Variables de estado
     int operador1;
