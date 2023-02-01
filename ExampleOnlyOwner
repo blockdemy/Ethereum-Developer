@@ -6,17 +6,24 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MyContract is Ownable {
 
-    uint value = 1 wei;
+    uint value;
+    address payable owner1;
 
     
-    function normalThing() public view returns (uint) {
+    //Cualquiera puede agregar saldo
+    function normalThing() public payable {
         // anyone can call this normalThing()
-        return value;
-    }
-
-
-    function specialThing() public onlyOwner payable {
-        // only the owner can call specialThing()!
         value = value + msg.value;
     }
+
+    //Solo el owner puede verlo 
+   function specialThing() public view onlyOwner returns (uint)  {
+        return address(this).balance;
+   }
+
+     //Solo el owner puede transferir 
+   function specialThing2(address payable _to) public onlyOwner  {
+         _to.transfer(address(this).balance);
+   }
+
 }
