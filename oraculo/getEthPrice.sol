@@ -3,7 +3,7 @@ pragma solidity ^0.8.7;
 
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
-contract PriceConsumerV3 {
+contract getEthPrice{
     AggregatorV3Interface internal priceFeed;
 
     /**
@@ -29,5 +29,16 @@ contract PriceConsumerV3 {
             uint80 answeredInRound
         ) = priceFeed.latestRoundData();
         return price;
+    }
+
+    function getOnlyEthPrice() public view returns( int256 ){
+        (
+            uint80 roundId,
+            int256 answer,
+            uint256 startedAt,
+            uint256 updatedAt,
+            uint80 answeredInRound
+        ) = priceFeed.latestRoundData();
+        return answer;
     }
 }
