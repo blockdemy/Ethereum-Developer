@@ -18,3 +18,5 @@ contract VariablesGlobales{
 
     uint public txPrice = tx.gasprice;
 }
+
+//https://docs.soliditylang.org/en/v0.8.23/units-and-global-variables.html#special-variables-and-functions
