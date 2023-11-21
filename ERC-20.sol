@@ -2,6 +2,9 @@
 pragma solidity 0.8.0;
 
 interface IERC20 {
+    function name() external view returns (string memory);
+    function symbol() external view returns (string memory);
+    function decimals() external pure returns (uint8);
     function totalSupply() external view returns (uint256);
     function balanceOf(address _owner) external view returns (uint256 balance);
     function transfer(address _to, uint256 _value) external returns (bool success);
@@ -18,39 +21,54 @@ contract ERC20 is IERC20{
     //Variables 
 
     //NOMBRE
-    string public constant name = "Blockdemy Community Token";
+    string private _name;
 
     //SIMBOLO
-    string public constant symbol = "BAM";
+    string private _symbol;
 
     // DECIMALES
-    uint8 public constant decimals = 18;
+    uint8 private _decimals;
 
     //TOTAL SUPPLY
     // 10 ether ===> 10 000000000000000000
-    uint256 totalSupply_ = 10 ether;
+    uint256 private _totalSupply;
 
 
     //BALANCES
-    mapping (address => uint256) balances;
+    mapping (address => uint256) private _balances;
 
-    //ALLOWED
-    mapping(address => mapping (address=> uint256)) allowed;
+    //ALLOWED - Address del propietario - Address del spender autorizado
+    mapping(address => mapping (address => uint256)) private _allowed;
 
     constructor(){
-        balances[msg.sender] = totalSupply_;
+        _name = "Blockdemy Token";
+        _symbol = "BAM Token";
+        _totalSupply = 20 ether; 
+        _balances[msg.sender] = _totalSupply;
     }
 
     //Funciones
+
+    function name() public view override returns (string memory){
+        return _name;
+    }
+
+    function symbol() public view override returns (string memory){
+        return _symbol;
+    }
+
+    function decimals() public pure override returns (uint8){
+        return 18;
+    }
     
     //TotalSupply retorna el total supply
     function totalSupply() external override view returns (uint256){
-        return totalSupply_;
+        return _totalSupply;
     }
 
     //Devolver el balance de una cuenta en especifico.
     function balanceOf(address _owner) external override view returns (uint256 balance){
-        return balances[_owner];
+        return _balances[_owner];
     }
 
     //Transferir cierta cantidad a otra cuenta
@@ -63,9 +81,9 @@ contract ERC20 is IERC20{
     Return si fue exitoso o no
     */
     function transfer(address _to, uint256 _value) external override returns (bool success){
-        require (balances[msg.sender] <= _value);
-        balances[msg.sender] = balances[msg.sender] - _value;
-        balances[_to] = balances[_to] + _value;
+        require (_balances[msg.sender] >= _value);
+        _balances[msg.sender] = _balances[msg.sender] - _value;
+        _balances[_to] = _balances[_to] + _value;
         emit Transfer(msg.sender, _to, _value);
         return true;
     }
@@ -81,11 +99,11 @@ contract ERC20 is IERC20{
     Retorna true
     */
     function transferFrom(address _from, address _to, uint256 _value) external override returns (bool success){
-        require(_value <= balances[_from]);
-        require(_value <= allowed[_from][msg.sender]);
-        balances[_from] = balances[_from] - _value;
-        allowed[_from][msg.sender] = allowed[_from][msg.sender] - _value;
-        balances[_to] = balances[_to] + _value;
+        require(_value <= _balances[_from]);
+        require(_value <= _allowed[_from][msg.sender]);
+        _balances[_from] = _balances[_from] - _value;
+        _allowed[_from][msg.sender] = _allowed[_from][msg.sender] - _value;
+        _balances[_to] = _balances[_to] + _value;
         emit Transfer(_from, _to, _value);
         return true;
     }
@@ -96,14 +114,22 @@ contract ERC20 is IERC20{
     emitir evento Approval
     */
     function approve(address _spender, uint256 _value) external override returns (bool success){
-        allowed[msg.sender][_spender] = _value;
+        _allowed[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);
         return true;
     }
 
     //Allowance. Retornar la cantidad de tokens permitidos para una cuenta. 
     function allowance(address _owner, address _spender) external override view returns (uint256 remaining){
-        return allowed[_owner][_spender];
+        return _allowed[_owner][_spender];
     }
 
 }
+//Owner
+//0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
+
+//Receiver
+//0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2
+
+//Spender
+//0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db
